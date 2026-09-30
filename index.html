@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOID_XITECH_ELITE // PREMIUM UI</title>
+    <style>
+        :root { 
+            --red: #ff0033; 
+            --bg: #0a0a0c; 
+            --glass: rgba(20, 20, 25, 0.85); 
+            --border: #2a2a35; 
+            --text: #e0e0e0; 
+            --muted: #888;
+        }
+        body { 
+            background: radial-gradient(circle at center, #1a1a25 0%, var(--bg) 100%); 
+            color: var(--text); 
+            font-family: 'Consolas', 'Courier New', monospace; 
+            margin: 0; 
+            padding: 20px; 
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .panel {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255, 0, 51, 0.2);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .title { font-size: 14px; font-weight: bold; color: var(--red); letter-spacing: 1px; }
+        .status { font-size: 10px; color: #00ff00; background: #002200; padding: 2px 6px; border-radius: 4px; border: 1px solid #004400; }
+        .tabs {
+            display: flex;
+            background: #111;
+        }
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--muted);
+            padding: 12px 0;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+        .tab-btn.active { color: var(--red); border-bottom-color: var(--red); background: #1a1a1f; }
+        .content { padding: 20px; max-height: 350px; overflow-y: auto; }
+        .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .label { font-size: 11px; color: var(--text); }
+        .toggle {
+            position: relative;
+            width: 40px;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .toggle.on { background: var(--red); box-shadow: 0 0 8px var(--red); }
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px; left: 2px;
+            width: 16px; height: 16px;
+            background: #fff;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+        .toggle.on::after { left: 22px; }
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px;
+            background: #333; border-radius: 2px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px; width: 16px;
+            background: var(--red); border-radius: 50%;
+            cursor: pointer; margin-top: -6px;
+            box-shadow: 0 0 5px var(--red);
+        }
+        .deploy-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--red), #8b0000);
+            color: white;
+            border: none;
+            font-weight: bold;
+            font-size: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 0, 51, 0.3);
+            transition: 0.2s;
+            margin-top: 10px;
+        }
+        .deploy-btn:active { transform: scale(0.98); }
+        .floating-master {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: var(--red);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 0 20px var(--red);
+            cursor: pointer;
+            z-index: 1000;
+            border: 2px solid #fff;
+            transition: 0.3s;
+        }
+        .floating-master:hover { transform: scale(1.1); box-shadow: 0 0 30px var(--red); }
+        .terminal {
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            height: 50px;
+            font-size: 9px;
+            padding: 5px;
+            overflow-y: auto;
+            margin-top: 10px;
+            color: #00ff00;
+        }
+        .footer { padding: 10px; text-align: center; font-size: 9px; color: var(--muted); border-top: 1px solid var(--border); }
+    </style>
+</head>
+<body>
+
+    <button class="floating-master" id="masterBtn" onclick="toggleMaster()">MASTER</button>
+
+    <div class="panel" id="mainPanel">
+        <div class="header">
+            <div class="title">VOID_XITECH_ELITE</div>
+            <div class="status" id="syncStatus">STANDBY</div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab(event, 'aim')">AIMBOT</button>
+            <button class="tab-btn" onclick="openTab(event, 'esp')">VISUAL</button>
+            <button class="tab-btn" onclick="openTab(event, 'move')">MOVE</button>
+            <button class="tab-btn" onclick="openTab(event, 'sec')">SEC</button>
+        </div>
+
+        <div class="content">
+            <!-- ABA AIMBOT -->
+            <div id="aim" class="tab-content">
+                <div class="row">
+                    <div class="label">Aimbot Active (Head Only)</div>
+                    <div class="toggle on" onclick="toggleSwitch(this, 'aimbot')"></div>
+                </div>
+                <div class="row">
+                    <div class="label">Aim Assist (Smooth Lock)</div>
+                    <div class="toggle on" onclick="toggleSwitch(this, 'assist')"></div>
+                </div>
+                <div class="row" style="flex-direction: column; align-items: flex-start;">
+                    <div class="label" style="margin-bottom: 5px;">Aim FOV: <span id="fovVal">180°</span></div>
+                    <input type="range" id="fov" min="30" max="360" value="180" oninput="updateVal('fov', this.value)">
+                </div>
+                <div class="row" style="flex-direction: column; align-items: flex-start;">
+                    <div class="label" style="margin-bottom: 5px;">Snap Force: <span id="snapVal">90%</span></div>
+                    <input type="range" id="snap" min="0" max="100" value="90" oninput="updateVal('snap', this.value)">
+                </div>
+            </div>
+
+            <!-- ABA VISUAL -->
+            <div id="esp" class="tab-content" style="display:none;">
+                <div class="row">
+                    <div class="label">Player/Enemy ESP</div>
+                    <div class="toggle on" onclick="toggleSwitch(this, 'esp')"></div>
+                </div>
+                <div class="row">
+                    <div class="label">Health / Distance</div>
+                    <div class="toggle on" onclick="toggleSwitch(this, 'health')"></div>
+                </div>
+                <div class="row">
+                    <div class="label">Crosshair (Center)</div>
+                    <div class="toggle on" onclick="toggleSwitch(this, 'cross')"></div>
+                </div>
+                <div class="row">
+                    <div class="label">Radar (Intel Map)</div>
+                    <div class="toggle on" onclick="toggleSwitch(this, 'radar')"></div>
+                </div>
+            </div>
+
+            <!-- ABA MOVE -->
+            <div id="move" class="tab-content" style="display:none;">
+                <div class="row">
+                    <div class="label">No Recoil (Eraser)</div>
+                    <div class="toggle on" onclick="toggleSwitch(this, 'recoil')"></div>
+                </div>
+                <div class="row">
+                    <div class="label">No Spread (Zero Dispersion)</div>
+                    <div class="toggle on" onclick="toggleSwitch(this, 'spread')"></div>
+                </div>
+                <div class="row">
+                    <div class="label">Speed (Ovrdive)</div>
+                    <div class="toggle" onclick="toggleSwitch(this, 'speed')"></div>
+                </div>
+                <div class="row">
+                    <div class="label">Teleport / Fly</div>
+                    <div class="toggle" onclick="toggleSwitch(this, 'fly')"></div>
+                </div>
+            </div>
+
+            <!-- ABA SEC -->
+            <div id="sec" class="tab-content" style="display:none;">
+                <div class="row">
+                    <div class="label">Anti-detection Protocol</div>
+                    <div class="toggle on" onclick="toggleSwitch(this, 'anti')"></div>
+                </div>
+                <div class="row" style="flex-direction: column; align-items: flex-start;">
+                    <div class="label" style="margin-bottom: 5px;">Humanization Jitter: <span id="jitterVal">2%</span></div>
+                    <input type="range" id="jitter" min="0" max="10" value="2" oninput="updateVal('jitter', this.value)">
+                </div>
+                <div class="row" style="flex-direction: column; align-items: flex-start;">
+                    <div class="label" style="margin-bottom: 5px;">Sensibilidade: <span id="sensVal">150</span></div>
+                    <input type="range" id="sens" min="1" max="200" value="150" oninput="updateVal('sens', this.value)">
+                </div>
+            </div>
+
+            <button class="deploy-btn" onclick="deploySystem()">DEPLOY GOD_MODE</button>
+            <div class="terminal" id="terminal">
+                <div>[00:00:00] SISTEMA INICIALIZADO.</div>
+            </div>
+        </div>
+        <div class="footer">VOID_XITECH V2.0 // KERNEL_DIRECT_ACCESS</div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) tabcontent[i].style.display = "none";
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) tablinks[i].className = tablinks[i].className.replace(" active", "");
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function toggleSwitch(el, id) {
+            el.classList.toggle('on');
+            logMessage("MODULE: " + id.toUpperCase() + (el.classList.contains('on') ? " ACTIVATED" : " DISABLED"));
+        }
+
+        function updateVal(id, val) {
+            document.getElementById(id + 'Val').innerText = val + (id === 'fov' ? '°' : (id === 'jitter' ? '%' : ''));
+            saveConfig();
+        }
+
+        function saveConfig() {
+            const config = {
+                fov: document.getElementById('fov').value,
+                snap: document.getElementById('snap').value,
+                jitter: document.getElementById('jitter').value,
+                sens: document.getElementById('sens').value
+            };
+            localStorage.setItem('void_premium', JSON.stringify(config));
+        }
+
+        window.addEventListener('load', function() {
+            const saved = localStorage.getItem('void_premium');
+            if (saved) {
+                const config = JSON.parse(saved);
+                document.getElementById('fov').value = config.fov;
+                document.getElementById('snap').value = config.snap;
+                document.getElementById('jitter').value = config.jitter;
+                document.getElementById('sens').value = config.sens;
+                updateVal('fov', config.fov);
+                updateVal('snap', config.snap);
+                updateVal('jitter', config.jitter);
+                updateVal('sens', config.sens);
+            }
+        });
+
+        function logMessage(msg) {
+            const terminal = document.getElementById('terminal');
+            const time = new Date().toLocaleTimeString('pt-BR');
+            const line = document.createElement('div');
+            line.innerText = `[${time}] ${msg}`;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function toggleMaster() {
+            const panel = document.getElementById('mainPanel');
+            const btn = document.getElementById('masterBtn');
+            if (panel.style.display === "none") {
+                panel.style.display = "block";
+                btn.innerText = "OFF";
+                btn.style.background = "#333";
+            } else {
+                panel.style.display = "none";
+                btn.innerText = "ON";
+                btn.style.background = "var(--red)";
+            }
+        }
+
+        function deploySystem() {
+            logMessage("INJEÇÃO DE MEMÓRIA INICIADA...");
+            logMessage("HEAD_ONLY_LOCK: ATIVO");
+            if (navigator.vibrate) navigator.vibrate(300);
+            setTimeout(() => {
+                logMessage("GOD_MODE: ATIVADO. ABRE O JOGO.");
+                window.location.href = "freefire://";
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
